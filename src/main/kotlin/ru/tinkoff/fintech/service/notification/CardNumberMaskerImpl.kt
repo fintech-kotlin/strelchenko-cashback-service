@@ -3,15 +3,15 @@ package ru.tinkoff.fintech.service.notification
 class CardNumberMaskerImpl : CardNumberMasker {
 
     override fun mask(cardNumber: String, maskChar: Char, start: Int, end: Int): String {
-        if (end < start)
-            throw IndexOutOfBoundsException("Start index cannot be greater than end index")
+        require(end >= start) { "Start index cannot be greater than end index" }
 
         val result = StringBuilder()
         cardNumber.forEachIndexed { index, c ->
-            if (index in start until end)
+            if (index in start until end) {
                 result.append(maskChar)
-            else
+            } else {
                 result.append(c)
+            }
         }
         return result.toString()
     }
