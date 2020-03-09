@@ -1,9 +1,18 @@
 package ru.tinkoff.fintech.listener
 
-class TransactionListener() {
+import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.stereotype.Service
+import ru.tinkoff.fintech.model.Transaction
+import ru.tinkoff.fintech.service.transaction.TransactionService
 
-    fun onMessage(message: String) {
-        TODO("Implement it")
+@Service
+class TransactionListener(
+    val transactionService: TransactionService
+) {
+
+    @KafkaListener(topics = ["\${spring.kafka.consumer.topic}"])
+    fun onMessage(transaction: Transaction) {
+        transactionService.handleTransaction(transaction)
     }
 }
 

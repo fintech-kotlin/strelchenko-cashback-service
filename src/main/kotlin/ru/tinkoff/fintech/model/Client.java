@@ -15,6 +15,8 @@ package ru.tinkoff.fintech.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,10 @@ import java.util.Objects;
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2020-02-26T16:48:46.611+03:00")
 public class Client {
+
+  @JsonProperty("birthDate")
+  private LocalDate birthDate = null;
+
   @JsonProperty("cards")
   private List<String> cards = null;
 
@@ -39,6 +45,24 @@ public class Client {
 
   @JsonProperty("middleName")
   private String middleName = null;
+
+  public Client birthDate(LocalDate birthDate) {
+    this.birthDate = birthDate;
+    return this;
+  }
+
+  /**
+   * Get birthDate
+   * @return birthDate
+   **/
+  @ApiModelProperty(value = "")
+  public LocalDate getBirthDate() {
+    return birthDate;
+  }
+
+  public void setBirthDate(LocalDate birthDate) {
+    this.birthDate = birthDate;
+  }
 
   public Client cards(List<String> cards) {
     this.cards = cards;
@@ -148,7 +172,8 @@ public class Client {
       return false;
     }
     Client client = (Client) o;
-    return Objects.equals(this.cards, client.cards) &&
+    return Objects.equals(this.birthDate, client.birthDate) &&
+        Objects.equals(this.cards, client.cards) &&
         Objects.equals(this.firstName, client.firstName) &&
         Objects.equals(this.id, client.id) &&
         Objects.equals(this.lastName, client.lastName) &&
@@ -157,7 +182,7 @@ public class Client {
 
   @Override
   public int hashCode() {
-    return Objects.hash(cards, firstName, id, lastName, middleName);
+    return Objects.hash(birthDate, cards, firstName, id, lastName, middleName);
   }
 
 
@@ -166,6 +191,7 @@ public class Client {
     StringBuilder sb = new StringBuilder();
     sb.append("class Client {\n");
 
+    sb.append("    birthDate: ").append(toIndentedString(birthDate)).append("\n");
     sb.append("    cards: ").append(toIndentedString(cards)).append("\n");
     sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");

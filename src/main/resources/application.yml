@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+services.url:
+  card: http://****/card-service/api/v1/card/
+  client: http://****/client-service/api/v1/client/
+  loyalty: http://****/loyalty-service/api/v1/program/
+  notification: http://****/notification-service/api/v2/client/
+
+loyalty.payment.sign: strelchenko-cashback-service
+
+spring:
+  jpa:
+    hibernate:
+      generate-ddl: validate
+    database: POSTGRESQL
+    show-sql: true
+    properties:
+      hibernate.jdbc.lob:
+        non_contextual_creation: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: ****
+    username: ****
+    password: ****
+
+  kafka:
+    consumer:
+      bootstrap-servers: 40.69.78.245:19092
+      group-id: cashback
+      topic: transactions
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        request.timeout.ms: 70000
+        spring.json.type.mapping: ru.tinkoff.bpm.kotlincoursepaymentprocessing.kafka.TransactionInfo:ru.tinkoff.fintech.model.Transaction
+

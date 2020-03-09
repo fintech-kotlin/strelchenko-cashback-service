@@ -4,5 +4,5 @@ import ru.tinkoff.fintech.model.Card
 
 interface CardServiceClient {
 
-    fun getCard(id: String): Card
+    fun getCard(cardNumber: String): Card
 }
