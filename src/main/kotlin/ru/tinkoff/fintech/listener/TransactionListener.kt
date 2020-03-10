@@ -7,7 +7,7 @@ import ru.tinkoff.fintech.service.transaction.TransactionService
 
 @Service
 class TransactionListener(
-    val transactionService: TransactionService
+    private val transactionService: TransactionService
 ) {
 
     @KafkaListener(topics = ["\${spring.kafka.consumer.topic}"])
