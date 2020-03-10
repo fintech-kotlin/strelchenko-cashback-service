@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
-class NotificationServiceClientImpl : NotificationServiceClient {
+class NotificationServiceClientImpl(
     @Value("\${services.url.notification}")
-    lateinit var url: String
+    private val url: String
+) : NotificationServiceClient {
 
     override fun sendNotification(clientId: String, message: String) {
         val template = RestTemplate()

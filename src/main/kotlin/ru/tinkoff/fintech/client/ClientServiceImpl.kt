@@ -6,9 +6,10 @@ import org.springframework.web.client.RestTemplate
 import ru.tinkoff.fintech.model.Client
 
 @Service
-class ClientServiceImpl : ClientService {
+class ClientServiceImpl(
     @Value("\${services.url.client}")
-    lateinit var url: String
+    private val url: String
+) : ClientService {
 
     override fun getClient(id: String): Client {
         val template = RestTemplate()

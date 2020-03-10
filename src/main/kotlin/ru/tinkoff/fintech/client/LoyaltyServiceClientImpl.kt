@@ -6,9 +6,10 @@ import org.springframework.web.client.RestTemplate
 import ru.tinkoff.fintech.model.LoyaltyProgram
 
 @Service
-class LoyaltyServiceClientImpl : LoyaltyServiceClient {
+class LoyaltyServiceClientImpl(
     @Value("\${services.url.loyalty}")
-    lateinit var url: String
+    private val url: String
+) : LoyaltyServiceClient {
 
     override fun getLoyaltyProgram(id: String): LoyaltyProgram {
         val template = RestTemplate()

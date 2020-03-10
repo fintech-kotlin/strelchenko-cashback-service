@@ -20,11 +20,10 @@ class TransactionServiceImpl(
     val loyaltyPaymentRepository: LoyaltyPaymentRepository,
     val notificationMessageGenerator: NotificationMessageGenerator,
     val cashbackCalculator: CashbackCalculator,
-    val notificationService: NotificationServiceClient
-) : TransactionService {
-
+    val notificationService: NotificationServiceClient,
     @Value("\${loyalty.payment.sign}")
-    lateinit var loyaltyPaymentSign: String
+    private val loyaltyPaymentSign: String
+) : TransactionService {
 
     override fun handleTransaction(transaction: Transaction) {
         val card = cardService.getCard(transaction.cardNumber)
