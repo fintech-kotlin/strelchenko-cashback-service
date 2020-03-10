@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import ru.tinkoff.fintech.model.LoyaltyProgram
+import ru.tinkoff.fintech.utils.getForObjectWithEmptyBodyResponseCheck
 
 @Service
 class LoyaltyServiceClientImpl(
@@ -13,6 +14,6 @@ class LoyaltyServiceClientImpl(
 ) : LoyaltyServiceClient {
 
     override fun getLoyaltyProgram(id: String): LoyaltyProgram {
-        return restTemplate.getForObject("$url$id", LoyaltyProgram::class.java)!!
+        return restTemplate.getForObjectWithEmptyBodyResponseCheck("$url$id", LoyaltyProgram::class.java)
     }
 }
