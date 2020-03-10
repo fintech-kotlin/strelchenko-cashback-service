@@ -7,12 +7,12 @@ import ru.tinkoff.fintech.model.Client
 
 @Service
 class ClientServiceImpl(
+    private val restTemplate: RestTemplate,
     @Value("\${services.url.client}")
     private val url: String
 ) : ClientService {
 
     override fun getClient(id: String): Client {
-        val template = RestTemplate()
-        return template.getForObject("$url$id", Client::class.java)!!
+        return restTemplate.getForObject("$url$id", Client::class.java)!!
     }
 }

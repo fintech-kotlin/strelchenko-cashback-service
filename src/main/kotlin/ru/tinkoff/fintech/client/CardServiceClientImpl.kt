@@ -7,12 +7,12 @@ import ru.tinkoff.fintech.model.Card
 
 @Service
 class CardServiceClientImpl(
+    private val restTemplate: RestTemplate,
     @Value("\${services.url.card}")
     private val url: String
 ) : CardServiceClient {
 
     override fun getCard(cardNumber: String): Card {
-        val template = RestTemplate()
-        return template.getForObject("$url$cardNumber", Card::class.java)!!
+        return restTemplate.getForObject("$url$cardNumber", Card::class.java)!!
     }
 }

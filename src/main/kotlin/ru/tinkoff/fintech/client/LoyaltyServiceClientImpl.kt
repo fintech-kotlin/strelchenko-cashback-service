@@ -7,12 +7,12 @@ import ru.tinkoff.fintech.model.LoyaltyProgram
 
 @Service
 class LoyaltyServiceClientImpl(
+    private val restTemplate: RestTemplate,
     @Value("\${services.url.loyalty}")
     private val url: String
 ) : LoyaltyServiceClient {
 
     override fun getLoyaltyProgram(id: String): LoyaltyProgram {
-        val template = RestTemplate()
-        return template.getForObject("$url$id", LoyaltyProgram::class.java)!!
+        return restTemplate.getForObject("$url$id", LoyaltyProgram::class.java)!!
     }
 }

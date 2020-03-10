@@ -9,17 +9,17 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class NotificationServiceClientImpl(
+    private val restTemplate: RestTemplate,
     @Value("\${services.url.notification}")
     private val url: String
 ) : NotificationServiceClient {
 
     override fun sendNotification(clientId: String, message: String) {
-        val template = RestTemplate()
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON_UTF8
         val request = HttpEntity(message, headers)
 
-        template.postForEntity(
+        restTemplate.postForEntity(
             "$url${clientId}/message",
             request,
             String::class.java
