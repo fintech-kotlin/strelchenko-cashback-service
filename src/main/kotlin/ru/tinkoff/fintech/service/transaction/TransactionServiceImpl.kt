@@ -1,5 +1,9 @@
 package ru.tinkoff.fintech.service.transaction
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import ru.tinkoff.fintech.client.CardServiceClient
@@ -26,26 +30,34 @@ class TransactionServiceImpl(
 ) : TransactionService {
 
     override fun handleTransaction(transaction: Transaction) {
-        val card = cardService.getCard(transaction.cardNumber)
-        val client = clientService.getClient(card.client)
-        val loyaltyProgram = loyaltyService.getLoyaltyProgram(card.loyaltyProgram)
-        val totalCashbackInCurrentMonth = loyaltyPaymentRepository.findCashbackTotalValueInCurrentMonth(card.id)
-        val transactionInfo = TransactionInfo(
-            loyaltyProgram.name,
-            transaction.value,
-            totalCashbackInCurrentMonth,
-            transaction.mccCode,
-            client.birthDate,
-            client.firstName,
-            client.lastName,
-            client.middleName
-        )
-        val cashback = cashbackCalculator.calculateCashback(transactionInfo)
+        runBlocking {
+            val card = cardService.getCard(transaction.cardNumber)
+            val clientFuture = async { clientService.getClient(card.client) }
+            val loyaltyProgramFuture = async { loyaltyService.getLoyaltyProgram(card.loyaltyProgram) }
+            val totalCashbackInCurrentMonthFuture = async { loyaltyPaymentRepository.findCashbackTotalValueInCurrentMonth(card.id) }
 
-        // В ТЗ не сказано, додумал сам, что если не операция покупки, то кэшбек начислять не надо
-        if (cashback == 0.0 || transactionInfo.mccCode == null) return
-        saveLoyaltyPaymentInfo(card, cashback, transaction)
-        sendNotification(transactionInfo, transaction, cashback, client)
+            val client = clientFuture.await()
+            val loyaltyProgram = loyaltyProgramFuture.await()
+            val totalCashbackInCurrentMonth = totalCashbackInCurrentMonthFuture.await()
+
+            val transactionInfo = TransactionInfo(
+                loyaltyProgram.name,
+                transaction.value,
+                totalCashbackInCurrentMonth,
+                transaction.mccCode,
+                client.birthDate,
+                client.firstName,
+                client.lastName,
+                client.middleName
+            )
+            val cashback = cashbackCalculator.calculateCashback(transactionInfo)
+
+            // В ТЗ не сказано, додумал сам, что если не операция покупки, то кэшбек начислять не надо
+            if (cashback == 0.0 || transactionInfo.mccCode == null) this.cancel()
+
+            launch { saveLoyaltyPaymentInfo(card, cashback, transaction) }
+            launch { sendNotification(transactionInfo, transaction, cashback, client) }
+        }
     }
 
     private fun sendNotification(
