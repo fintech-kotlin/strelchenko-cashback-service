@@ -1,9 +1,6 @@
 package ru.tinkoff.fintech.service.transaction
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import ru.tinkoff.fintech.client.CardServiceClient
@@ -30,7 +27,7 @@ class TransactionServiceImpl(
 ) : TransactionService {
 
     override fun handleTransaction(transaction: Transaction) {
-        runBlocking {
+        runBlocking(Dispatchers.IO) {
             val card = cardService.getCard(transaction.cardNumber)
             val clientFuture = async { clientService.getClient(card.client) }
             val loyaltyProgramFuture = async { loyaltyService.getLoyaltyProgram(card.loyaltyProgram) }
